@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Stat = ({type, value}) => (
+const Statistics = ({type, value}) => (
   <p>{type} {value}</p>
 )
 
@@ -27,12 +27,12 @@ const App = () => {
       <Button handleClick={() => increaseNeutral()} text="neutral" />
       <Button handleClick={() => increaseBad()} text="bad" />
       <h1>statistics</h1>
-      <Stat type={"good"} value={good} />
-      <Stat type={"neutral"} value={neutral} />
-      <Stat type={"bad"} value={bad} />
-      <Stat type={"all"} value={total} />
-      <Stat type={"average"} value={(good - bad) / total} />
-      <Stat type={"positive"} value={good / total + " %"} />
+      <Statistics type={"good"} value={good} />
+      <Statistics type={"neutral"} value={neutral} />
+      <Statistics type={"bad"} value={bad} />
+      <Statistics type={"all"} value={total} />
+      <Statistics type={"average"} value={(good - bad) / total} />
+      <Statistics type={"positive"} value={good / total + " %"} />
     </div>
   )
 }
