@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
-const Stat = ({feedback, counter}) => (
-  <div>
-    <p>{feedback} {counter}</p>
-  </div>
+const Stat = ({type, value}) => (
+  <p>{type} {value}</p>
 )
 
 const Button = (props) => (
@@ -20,6 +18,7 @@ const App = () => {
   const increaseGood = () => setGood(good + 1)
   const increaseNeutral = () => setNeutral(neutral + 1)
   const increaseBad = () => setBad(bad + 1)
+  const total = good + neutral + bad
 
   return (
     <div>
@@ -28,9 +27,12 @@ const App = () => {
       <Button handleClick={() => increaseNeutral()} text="neutral" />
       <Button handleClick={() => increaseBad()} text="bad" />
       <h1>statistics</h1>
-      <Stat feedback={"good"} counter={good} />
-      <Stat feedback={"neutral"} counter={neutral} />
-      <Stat feedback={"bad"} counter={bad} />
+      <Stat type={"good"} value={good} />
+      <Stat type={"neutral"} value={neutral} />
+      <Stat type={"bad"} value={bad} />
+      <Stat type={"all"} value={total} />
+      <Stat type={"average"} value={(good - bad) / total} />
+      <Stat type={"positive"} value={good / total + " %"} />
     </div>
   )
 }
