@@ -13,3 +13,9 @@ The My Studyinfo service contains all of your rights to study and completed stud
 
 To get a certificate from My Studyinfo, log in to the My Studyinfo with online banking codes, Mobile ID or an ID card with a chip.
 After you have logged in to My Studyinfo, you will receive a link for saving the information on your completed studies or sharing it with other people or organisations, share that link to us."
+
+# Commands
+npm create vite@latest <app_name> -- --template react
+cd <app_name>
+npm install
+npm run dev
