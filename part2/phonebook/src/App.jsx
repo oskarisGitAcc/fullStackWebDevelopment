@@ -38,6 +38,7 @@ const App = () => {
         setPersons(response.data);
       })
   }, []);
+
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -67,7 +68,16 @@ const App = () => {
     }
 
     const newPerson = { name: newName, number: newNumber, id: persons.length + 1 };
-    setPersons([...persons, newPerson]);
+
+    axios
+      .post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons([...persons, response.data]);
+      })
+      .catch(error => {
+        console.error('Error adding person:', error);
+      });
+
     setNewName('');
     setNewNumber('');
   };
