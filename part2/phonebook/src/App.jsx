@@ -32,16 +32,24 @@ const Persons = ({ filteredPersons, deletePerson }) => (
   </ul>
 );
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
   if (message === null) {
     return null
   }
 
-  return (
-    <div className='succesfulNotification'>
-      {message}
-    </div>
-  )
+  if (type === "successful") {
+    return (
+      <div className='successfulPopup'>
+        {message}
+      </div>
+    )
+  } else if (type === "unsuccessful") {
+    return (
+      <div className='unsuccessfulPopup'>
+        {message}
+      </div>
+    )
+  }
 };
 
 const App = () => {
@@ -57,7 +65,8 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [popupMessage, setPopupMessage] = useState(null)
+  const [successfulPopup, setSuccessfulPopup] = useState(null)
+  const [unsuccessfulPopup, setUnsuccessfulPopup] = useState(null)
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -95,14 +104,17 @@ const App = () => {
       personService
         .update(existingPerson.id, updatedPerson)
         .then((returnedPerson) => {
-          setPopupMessage(`Added ${returnedPerson.name}`)
+          setSuccessfulPopup(`Added ${returnedPerson.name}`)
           setTimeout(() => {
-            setPopupMessage(null)
+            setSuccessfulPopup(null)
           }, 5000)
           setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : returnedPerson)));
         })
-        .catch((error) => {
-          console.error('Error updating person:', error);
+        .catch(() => {
+          setUnsuccessfulPopup(`Information of ${newName} has already been removed from the server`)
+          setTimeout(() => {
+            setUnsuccessfulPopup(null)
+          }, 5000)
         });
     } else if (existingNumber) {
       alert(`${newNumber} is already added to the phonebook`);
@@ -117,9 +129,9 @@ const App = () => {
       personService
         .create(newPerson)
         .then(returnedPerson => {
-          setPopupMessage(`Added ${returnedPerson.name}`)
+          setSuccessfulPopup(`Added ${returnedPerson.name}`)
           setTimeout(() => {
-            setPopupMessage(null)
+            setSuccessfulPopup(null)
           }, 5000)
           setPersons([...persons, returnedPerson]);
         })
@@ -156,7 +168,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={popupMessage} />
+      <Notification message={successfulPopup} type="successful" />
+      <Notification message={unsuccessfulPopup} type="unsuccessful" />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm
