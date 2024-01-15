@@ -21,10 +21,13 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, 
   </form>
 );
 
-const Persons = ({ filteredPersons }) => (
+const Persons = ({ filteredPersons, deletePerson }) => (
   <ul>
     {filteredPersons.map((person) => (
-      <li key={person.id}>{person.name} {person.number}</li>
+      <li key={person.id}>
+        {person.name} {person.number}{' '}
+        <button onClick={() => deletePerson(person.id)}>delete</button>
+      </li>
     ))}
   </ul>
 );
@@ -67,8 +70,12 @@ const App = () => {
       return;
     }
 
-    const newPerson = { name: newName, number: newNumber, id: persons.length + 1 };
-
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+      id: (persons.length + 1).toString(),
+    };
+    
     personService
       .create(newPerson)
       .then(returnedPerson => {
@@ -80,6 +87,23 @@ const App = () => {
 
     setNewName('');
     setNewNumber('');
+  };
+
+  const deletePerson = id => {
+    const url = `http://localhost:3001/persons/${id}`;
+    const personToDelete = persons.find(person => person.id === id);
+    const confirmDeletion = window.confirm(`Delete ${personToDelete.name}?`);
+
+    if (confirmDeletion) {
+      personService
+        .remove(url)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch((error) => {
+          console.error('Error deleting person:', error);
+        });
+    }
   };
 
   const filteredPersons = persons.filter((person) =>
@@ -99,7 +123,7 @@ const App = () => {
         addPerson={addPerson}
       />
       <h3>Numbers</h3>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} deletePerson={deletePerson} />
     </div>
   );
 };
