@@ -32,6 +32,18 @@ const Persons = ({ filteredPersons, deletePerson }) => (
   </ul>
 );
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='succesfulNotification'>
+      {message}
+    </div>
+  )
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
@@ -45,6 +57,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [popupMessage, setPopupMessage] = useState(null)
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -82,6 +95,10 @@ const App = () => {
       personService
         .update(existingPerson.id, updatedPerson)
         .then((returnedPerson) => {
+          setPopupMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setPopupMessage(null)
+          }, 5000)
           setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : returnedPerson)));
         })
         .catch((error) => {
@@ -100,6 +117,10 @@ const App = () => {
       personService
         .create(newPerson)
         .then(returnedPerson => {
+          setPopupMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setPopupMessage(null)
+          }, 5000)
           setPersons([...persons, returnedPerson]);
         })
         .catch(error => {
@@ -135,6 +156,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={popupMessage} />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
       <h3>Add a new</h3>
       <PersonForm
