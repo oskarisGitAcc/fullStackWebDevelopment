@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import personService from './services/persons'
 
 const Filter = ({ searchTerm, handleSearchChange }) => (
   <div>
@@ -32,10 +32,10 @@ const Persons = ({ filteredPersons }) => (
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data);
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons);
       })
   }, []);
 
@@ -69,10 +69,10 @@ const App = () => {
 
     const newPerson = { name: newName, number: newNumber, id: persons.length + 1 };
 
-    axios
-      .post('http://localhost:3001/persons', newPerson)
-      .then(response => {
-        setPersons([...persons, response.data]);
+    personService
+      .create(newPerson)
+      .then(returnedPerson => {
+        setPersons([...persons, returnedPerson]);
       })
       .catch(error => {
         console.error('Error adding person:', error);
@@ -89,11 +89,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
-
       <h3>Add a new</h3>
-
       <PersonForm
         newName={newName}
         newNumber={newNumber}
@@ -101,9 +98,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         addPerson={addPerson}
       />
-
       <h3>Numbers</h3>
-
       <Persons filteredPersons={filteredPersons} />
     </div>
   );
