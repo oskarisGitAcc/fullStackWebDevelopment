@@ -60,31 +60,53 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-
+  
     if (newName.trim() === '' || newNumber.trim() === '') {
       return;
     }
-
-    if (persons.some((person) => person.name === newName || person.number === newNumber)) {
-      alert(`${newName} or ${newNumber} is already added to the phonebook`);
+  
+    const existingPerson = persons.find((person) => person.name === newName);
+    const existingNumber = persons.find((person) => person.number === newNumber);
+  
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${newName} is already added to the phonebook, replace the old number with a new one?`
+      );
+  
+      if (!confirmUpdate) {
+        return;
+      }
+  
+      const updatedPerson = { ...existingPerson, number: newNumber };
+  
+      personService
+        .update(existingPerson.id, updatedPerson)
+        .then((returnedPerson) => {
+          setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : returnedPerson)));
+        })
+        .catch((error) => {
+          console.error('Error updating person:', error);
+        });
+    } else if (existingNumber) {
+      alert(`${newNumber} is already added to the phonebook`);
       return;
+    } else {
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+        id: (persons.length + 1).toString(),
+      };
+  
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons([...persons, returnedPerson]);
+        })
+        .catch(error => {
+          console.error('Error adding person:', error);
+        });
     }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: (persons.length + 1).toString(),
-    };
-    
-    personService
-      .create(newPerson)
-      .then(returnedPerson => {
-        setPersons([...persons, returnedPerson]);
-      })
-      .catch(error => {
-        console.error('Error adding person:', error);
-      });
-
+  
     setNewName('');
     setNewNumber('');
   };
