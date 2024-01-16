@@ -22,7 +22,7 @@ const CountryInfo = ({ country }) => {
   );
 };
 
-const CountriesList = ({ countries, selectedCountry }) => {
+const CountriesList = ({ countries, selectedCountry, handleShowCountry }) => {
   if (countries.length < 2 || selectedCountry !== null) {
     return null;
   }
@@ -31,7 +31,10 @@ const CountriesList = ({ countries, selectedCountry }) => {
     <div>
       <ul>
         {countries.map((country) => (
-          <li key={country.name.common}>{country.name.common}</li>
+          <li key={country.name.common}>
+            {country.name.common}
+            <button onClick={() => handleShowCountry(country)}>show</button>
+          </li>
         ))}
       </ul>
     </div>
@@ -63,6 +66,11 @@ const App = () => {
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleShowCountry = (country) => {
+    setSelectedCountry(country);
+    setNotification(null);
   };
 
   useEffect(() => {
@@ -103,9 +111,9 @@ const App = () => {
   return (
     <div>
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
-      <CountriesList countries={countries} selectedCountry={selectedCountry} />
+      <CountriesList countries={countries} selectedCountry={selectedCountry} handleShowCountry={handleShowCountry} />
       <Notification message={notification} />
-      <CountryInfo country={selectedCountry}/>
+      <CountryInfo country={selectedCountry} />
     </div>
   );
 };
