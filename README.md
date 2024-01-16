@@ -18,5 +18,6 @@ After you have logged in to My Studyinfo, you will receive a link for saving the
 - npm create vite@latest <app_name> -- --template react
 - cd <app_name>
 - npm install
+- npm install axios
 - npm run dev
 - json-server --port 3001 --watch db.json
