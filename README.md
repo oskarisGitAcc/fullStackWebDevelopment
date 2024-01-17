@@ -15,9 +15,11 @@ To get a certificate from My Studyinfo, log in to the My Studyinfo with online b
 After you have logged in to My Studyinfo, you will receive a link for saving the information on your completed studies or sharing it with other people or organisations, share that link to us."
 
 # Commands
+- eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519
 - npm create vite@latest <app_name> -- --template react
 - cd <app_name>
 - npm install
 - npm install axios
 - npm run dev
+- export VITE_WEATHER_API_KEY=1b832982940a031ccb42210f321b7612 && npm run dev
 - json-server --port 3001 --watch db.json

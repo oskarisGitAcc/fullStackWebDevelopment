@@ -18,6 +18,7 @@ const CountryInfo = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt={`Flag of ${country.name.common}`} style={{ maxWidth: '200px' }} />
+      <WeatherInfo capital={country.capital[0]} />
     </div>
   );
 };
@@ -39,7 +40,39 @@ const CountriesList = ({ countries, selectedCountry, handleShowCountry }) => {
       </ul>
     </div>
   );
-}
+};
+
+const WeatherInfo = ({ capital }) => {
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${apiKey}`)
+      .then((response) => {
+        setWeather(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching weather data:', error);
+      });
+  }, [capital]);
+
+  if (!weather) {
+    return null;
+  }
+
+  const iconCode = weather.weather[0].icon;
+  const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+
+  return (
+    <div>
+      <h3>Weather in {capital}</h3>
+      <p>temperature {(weather.main.temp - 273.15).toFixed(2)} Celsius</p>
+      <img src={iconUrl} alt="Weather Icon" />
+      <p>wind {weather.wind.speed} m/s</p>
+    </div>
+  );
+};
 
 const Filter = ({ searchTerm, handleSearchChange }) => (
   <div>
