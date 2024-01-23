@@ -1,7 +1,7 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
 let persons = [
   { 
@@ -24,11 +24,11 @@ let persons = [
     "name": "Mary Poppendieck", 
     "number": "39-23-6423122"
   }
-]
+];
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
-})
+});
 
 app.get('/info', (req, res) => {
   const requestTime = new Date();
@@ -48,10 +48,16 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
+});
 
-})
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
+});
 
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
-})
+});
