@@ -47,7 +47,7 @@ app.get('/api/persons/:id', (request, response) => {
     response.json(person)
   } else {
     response.status(404).end()
-  };
+  }
 });
 
 function generateUniqueId() {
@@ -57,13 +57,19 @@ function generateUniqueId() {
 app.post('/api/persons', (request, response) => {
   const body = request.body;
 
-  console.log("test");
-
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: 'name or number is missing',
     });
-  };
+  }
+
+  const duplicateName = persons.find(person => person.name === body.name);
+
+  if (duplicateName) {
+    return response.status(400).json({
+      error: 'name must be unique',
+    });
+  }
 
   const person = {
     id: generateUniqueId(),
